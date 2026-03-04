@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MotiVoz | Música Romántica</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#070707;
+      --panel:#0f0f10;
+      --panel2:#121214;
+      --text:#f2f2f2;
+      --muted:rgba(242,242,242,.72);
+      --gold:#f5c56a;
+      --red:#e63946;
+      --red2:#ff4c5a;
+      --line:rgba(255,255,255,.08);
+      --shadow: 0 18px 55px rgba(0,0,0,.55);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box; margin:0; padding:0;}
+    html{scroll-behavior:smooth;}
+    body{
+      background: radial-gradient(1200px 600px at 50% 0%, rgba(245,197,106,.14), transparent 55%),
+                  radial-gradient(900px 520px at 15% 15%, rgba(230,57,70,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+
+    /* Top bar */
+    .topbar{
+      position:fixed; inset:0 0 auto 0;
+      z-index:50;
+      background:rgba(7,7,7,.55);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      max-width:1160px;
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      text-decoration:none; color:var(--text);
+    }
+    .brand img{width:36px; height:36px; border-radius:10px; object-fit:contain; background:rgba(255,255,255,.03); border:1px solid var(--line);}
+    .brand b{font-family:"Playfair Display", serif; letter-spacing:.4px;}
+    .menu{
+      display:flex; gap:18px; align-items:center;
+    }
+    .menu a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+      padding:8px 10px;
+      border-radius:12px;
+      transition:.2s;
+    }
+    .menu a:hover{color:var(--text); background:rgba(255,255,255,.04);}
+    .nav-actions{display:flex; gap:10px; align-items:center;}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:14px;
+      text-decoration:none;
+      font-weight:600;
+      border:1px solid var(--line);
+      transition:.2s;
+      font-size:14px;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn-primary{
+      background:linear-gradient(180deg, rgba(230,57,70,1), rgba(255,76,90,1));
+      border:0;
+      box-shadow:0 12px 28px rgba(230,57,70,.25);
+      color:white;
+    }
+    .btn-primary:hover{transform:translateY(-1px); filter:saturate(1.05);}
+    .btn-ghost{
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+    }
+    .btn-ghost:hover{background:rgba(255,255,255,.06); transform:translateY(-1px);}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(245,197,106,.10);
+      border:1px solid rgba(245,197,106,.25);
+      color:rgba(245,197,106,.95);
+      font-size:12px;
+      font-weight:600;
+    }
+
+    /* Layout */
+    .wrap{max-width:1160px; margin:0 auto; padding:0 18px;}
+    .spacer{height:72px;} /* for fixed nav */
+
+    /* Hero */
+    .hero{
+      padding:84px 0 46px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:26px;
+      align-items:center;
+    }
+    .hero h1{
+      font-family:"Playfair Display", serif;
+      font-size:62px;
+      line-height:1.05;
+      letter-spacing:.4px;
+      margin:14px 0 14px;
+    }
+    .hero h1 span{
+      background:linear-gradient(90deg, var(--gold), #ffd89a);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      text-shadow: 0 0 40px rgba(245,197,106,.12);
+    }
+    .lead{
+      color:var(--muted);
+      font-size:18px;
+      max-width:62ch;
+    }
+    .hero-cta{
+      margin-top:22px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+    }
+    .hero-card{
+      background:linear-gradient(180deg, rgba(18,18,20,.92), rgba(12,12,13,.92));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-card:before{
+      content:"";
+      position:absolute; inset:-80px -80px auto auto;
+      width:240px; height:240px;
+      background:radial-gradient(circle, rgba(245,197,106,.25), transparent 60%);
+      filter:blur(2px);
+    }
+    .logo-big{
+      width:100%;
+      max-width:360px;
+      margin:0 auto;
+      display:block;
+      filter: drop-shadow(0 22px 40px rgba(0,0,0,.6));
+    }
+    .quote{
+      margin-top:18px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+      color:rgba(242,242,242,.86);
+      font-size:15px;
+    }
+
+    /* Sections */
+    section{padding:56px 0;}
+    .section-head{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
+      margin-bottom:18px;
+    }
+    .section-head h2{
+      font-family:"Playfair Display", serif;
+      font-size:38px;
+      letter-spacing:.2px;
+    }
+    .section-head p{color:var(--muted); max-width:70ch;}
+
+    /* Cards */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:16px;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(18,18,20,.88), rgba(12,12,13,.88));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      transition:.2s;
+    }
+    .card:hover{transform:translateY(-3px); border-color:rgba(245,197,106,.22);}
+    .icon{
+      width:44px; height:44px;
+      display:grid; place-items:center;
+      border-radius:14px;
+      background:rgba(245,197,106,.10);
+      border:1px solid rgba(245,197,106,.20);
+      color:rgba(245,197,106,.95);
+      font-weight:800;
+      margin-bottom:12px;
+      font-size:18px;
+    }
+    .card h3{font-size:18px; margin-bottom:6px;}
+    .card p{color:var(--muted); font-size:14px;}
+
+    /* Gallery */
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(12, 1fr);
+      gap:12px;
+    }
+    .ph{
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:
+        radial-gradient(700px 220px at 20% 20%, rgba(245,197,106,.14), transparent 60%),
+        radial-gradient(600px 220px at 80% 50%, rgba(230,57,70,.12), transparent 60%),
+        rgba(255,255,255,.03);
+      min-height:180px;
+      overflow:hidden;
+      position:relative;
+    }
+    .ph:after{
+      content:"Añade aquí una foto/video (placeholder)";
+      position:absolute; inset:auto 14px 14px 14px;
+      font-size:12px; color:rgba(242,242,242,.65);
+      border-top:1px solid rgba(255,255,255,.10);
+      padding-top:10px;
+    }
+    .ph.big{grid-column:span 7; min-height:260px;}
+    .ph.mid{grid-column:span 5; min-height:260px;}
+    .ph.s1{grid-column:span 4;}
+    .ph.s2{grid-column:span 4;}
+    .ph.s3{grid-column:span 4;}
+
+    /* Booking */
+    .booking{
+      background:linear-gradient(180deg, rgba(18,18,20,.65), rgba(10,10,10,.65));
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:22px;
+      box-shadow:var(--shadow);
+    }
+    .booking-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:18px;
+      align-items:start;
+    }
+    .form{
+      display:grid;
+      gap:10px;
+    }
+    .field{
+      display:grid;
+      gap:6px;
+    }
+    label{font-size:13px; color:rgba(242,242,242,.78);}
+    input, textarea, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      outline:none;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color:rgba(245,197,106,.35);
+      box-shadow:0 0 0 4px rgba(245,197,106,.10);
+    }
+    textarea{min-height:118px; resize:vertical;}
+    .help{
+      color:var(--muted);
+      font-size:13px;
+    }
+    .contact-panel{
+      border-left:1px solid var(--line);
+      padding-left:18px;
+    }
+    .contact-item{
+      display:flex; gap:12px; align-items:flex-start;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.02);
+      margin-bottom:10px;
+    }
+    .contact-item b{display:block; margin-bottom:2px;}
+    .contact-item small{color:var(--muted);}
+    .contact-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+    .btn-wa{
+      background:#25D366;
+      border:0;
+      color:#07260f;
+      font-weight:800;
+    }
+    .btn-wa:hover{filter:saturate(1.05); transform:translateY(-1px);}
+    .btn-ig{
+      background:linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
+      border:0;
+      color:white;
+      font-weight:800;
+    }
+    .btn-ig:hover{transform:translateY(-1px);}
+
+    /* Footer */
+    footer{
+      border-top:1px solid var(--line);
+      padding:26px 0 34px;
+      color:rgba(242,242,242,.6);
+      font-size:13px;
+    }
+
+    /* Floating WhatsApp */
+    .wa-float{
+      position:fixed;
+      right:18px; bottom:18px;
+      width:58px; height:58px;
+      border-radius:18px;
+      display:grid; place-items:center;
+      background:#25D366;
+      color:#07260f;
+      text-decoration:none;
+      font-weight:900;
+      box-shadow:0 14px 35px rgba(0,0,0,.45);
+      z-index:60;
+      transition:.2s;
+    }
+    .wa-float:hover{transform:translateY(-2px) scale(1.02);}
+    .wa-float span{font-size:22px; line-height:1;}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero-grid{grid-template-columns:1fr; }
+      .hero h1{font-size:50px;}
+      .grid{grid-template-columns:1fr; }
+      .booking-grid{grid-template-columns:1fr; }
+      .contact-panel{border-left:0; padding-left:0; border-top:1px solid var(--line); padding-top:16px;}
+      .menu{display:none;} /* simple mobile */
+      .ph.big{grid-column:span 12;}
+      .ph.mid{grid-column:span 12;}
+      .ph.s1,.ph.s2,.ph.s3{grid-column:span 12;}
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="nav">
+      <a class="brand" href="#inicio">
+        <img src="logo.png" alt="MotiVoz logo">
+        <div>
+          <b>MotiVoz</b><br>
+          <span style="font-size:12px; color:rgba(242,242,242,.65);">Música romántica</span>
+        </div>
+      </a>
+
+      <div class="menu">
+        <a href="#servicios">Servicios</a>
+        <a href="#galeria">Galería</a>
+        <a href="#reservas">Reservas</a>
+      </div>
+
+      <div class="nav-actions">
+        <a class="btn btn-ghost" target="_blank" href="https://www.instagram.com/motivozbcn/">Instagram</a>
+        <a class="btn btn-primary" href="#reservas">Reservar</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="inicio" class="spacer"></div>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+
+        <div>
+          <span class="pill">Barcelona · Actuaciones & Eventos</span>
+
+          <h1>
+            <span>MotiVoz</span><br>
+            Música romántica en vivo
+          </h1>
+
+          <p class="lead">
+            Nuestras sonoridades ofrecen todo un periplo por el repertorio romántico hispano.
+            Permítannos abrazarlos con esas canciones de amor, encuentros, embelesos, amoríos y otros líos.
+          </p>
+
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#reservas">Reservar actuación</a>
+            <a class="btn btn-ghost" target="_blank" href="https://wa.me/34688916120">WhatsApp</a>
+            <a class="btn btn-ghost" target="_blank" href="https://www.instagram.com/motivozbcn/">Instagram</a>
+          </div>
+
+          <p class="help" style="margin-top:12px;">
+            Respuesta rápida por WhatsApp: <b>+34 688 916 120</b>
+          </p>
+        </div>
+
+        <div class="hero-card">
+          <img src="logo.png" alt="Logo MotiVoz" class="logo-big">
+          <div class="quote">
+            Repertorio romántico hispano · Formato ideal para bodas, cenas y eventos privados.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Servicios -->
+  <section id="servicios">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Servicios</h2>
+          <p>Actuaciones con un enfoque elegante, íntimo y emocional. Adaptamos el repertorio al tipo de evento.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="icon">💍</div>
+          <h3>Bodas</h3>
+          <p>Entrada, ceremonia, cóctel o banquete. Música romántica con presencia escénica cuidada.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">🍷</div>
+          <h3>Cenas románticas</h3>
+          <p>Ambiente cálido y sofisticado, perfecto para restaurantes, terrazas y celebraciones privadas.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">🎤</div>
+          <h3>Eventos privados</h3>
+          <p>Conciertos íntimos, aniversarios, cumpleaños y encuentros especiales con repertorio a medida.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Galería -->
+  <section id="galeria">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Galería</h2>
+          <p>Añade fotos y vídeos de actuaciones. Si quieres, te preparo una versión conectada a Instagram (embed).</p>
+        </div>
+      </div>
+
+      <div class="gallery">
+        <div class="ph big"></div>
+        <div class="ph mid"></div>
+        <div class="ph s1"></div>
+        <div class="ph s2"></div>
+        <div class="ph s3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reservas -->
+  <section id="reservas">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Reservas</h2>
+          <p>Envíanos los datos del evento. El botón enviará el mensaje directamente por WhatsApp (sin servidor).</p>
+        </div>
+      </div>
+
+      <div class="booking">
+        <div class="booking-grid">
+
+          <form class="form" id="bookingForm">
+            <div class="field">
+              <label for="nombre">Nombre</label>
+              <input id="nombre" type="text" placeholder="Tu nombre" required>
+            </div>
+
+            <div class="field">
+              <label for="telefono">Teléfono</label>
+              <input id="telefono" type="text" placeholder="+34 ...">
+            </div>
+
+            <div class="field">
+              <label for="tipo">Tipo de evento</label>
+              <select id="tipo">
+                <option>Boda</option>
+                <option>Cena romántica</option>
+                <option>Evento privado</option>
+                <option>Otro</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="fecha">Fecha</label>
+              <input id="fecha" type="date">
+            </div>
+
+            <div class="field">
+              <label for="lugar">Lugar</label>
+              <input id="lugar" type="text" placeholder="Ciudad / local / dirección aproximada">
+            </div>
+
+            <div class="field">
+              <label for="mensaje">Detalles</label>
+              <textarea id="mensaje" placeholder="Horario, duración, repertorio, número de invitados, etc."></textarea>
+            </div>
+
+            <a class="btn btn-primary" id="sendWhatsApp" href="#" style="justify-content:center;">
+              Enviar por WhatsApp
+            </a>
+
+            <p class="help">
+              Al pulsar, se abrirá WhatsApp con el mensaje preparado.
+            </p>
+          </form>
+
+          <div class="contact-panel">
+            <div class="contact-item">
+              <div class="icon" style="width:42px;height:42px;border-radius:14px;">📞</div>
+              <div>
+                <b>Reservas</b>
+                <small>WhatsApp: +34 688 916 120</small>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="icon" style="width:42px;height:42px;border-radius:14px;">📸</div>
+              <div>
+                <b>Instagram</b>
+                <small>@motivozbcn</small>
+              </div>
+            </div>
+
+            <div class="contact-actions">
+              <a class="btn btn-wa" target="_blank" href="https://wa.me/34688916120">WhatsApp</a>
+              <a class="btn btn-ig" target="_blank" href="https://www.instagram.com/motivozbcn/">Instagram</a>
+            </div>
+
+            <p class="help" style="margin-top:12px;">
+              Si quieres, puedo añadir: vídeos embebidos, testimonios, y un calendario real de disponibilidad.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      © <span id="year"></span> MotiVoz · Música Romántica · Barcelona
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp -->
+  <a class="wa-float" target="_blank" href="https://wa.me/34688916120" aria-label="Reservar por WhatsApp">
+    <span>WA</span>
+  </a>
+
+  <script>
+    // Footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Build WhatsApp message from form (no backend)
+    const phone = "34688916120";
+
+    const byId = (id) => document.getElementById(id);
+
+    function buildMessage(){
+      const nombre = byId("nombre").value.trim();
+      const tel = byId("telefono").value.trim();
+      const tipo = byId("tipo").value;
+      const fecha = byId("fecha").value;
+      const lugar = byId("lugar").value.trim();
+      const msg = byId("mensaje").value.trim();
+
+      const lines = [
+        "Hola MotiVoz, quiero reservar una actuación:",
+        "",
+        `Nombre: ${nombre || "-"}`,
+        `Teléfono: ${tel || "-"}`,
+        `Evento: ${tipo || "-"}`,
+        `Fecha: ${fecha || "-"}`,
+        `Lugar: ${lugar || "-"}`,
+        "",
+        `Detalles: ${msg || "-"}`
+      ];
+
+      return encodeURIComponent(lines.join("\n"));
+    }
+
+    document.getElementById("sendWhatsApp").addEventListener("click", (e) => {
+      e.preventDefault();
+
+      // Basic requirement: name
+      if(!byId("nombre").value.trim()){
+        byId("nombre").focus();
+        return;
+      }
+
+      const text = buildMessage();
+      const url = `https://wa.me/${phone}?text=${text}`;
+      window.open(url, "_blank");
+    });
+  </script>
+
+</body>
+</html>
